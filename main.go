@@ -18,6 +18,13 @@ import (
 var content embed.FS
 
 func main() {
+	// ログの出力先をファイルに変更（コンソール出力を避けるため）
+	logFile, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err == nil {
+		defer logFile.Close()
+		log.SetOutput(logFile)
+	}
+
 	// HTTPサーバーを起動
 	server := startServer()
 	defer server.Close()
@@ -30,7 +37,7 @@ func main() {
 	w := webview.New(true)
 	defer w.Destroy()
 	w.SetTitle("ダッシュボード")
-	w.SetSize(1200, 800, webview.HintNone)
+	w.SetSize(1600, 1200, webview.HintNone)
 	w.Navigate(url)
 	w.Run()
 }

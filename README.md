@@ -1,66 +1,66 @@
 # ダッシュボードアプリケーション
 
-CSVデータをロードして表示するダッシュボードアプリケーション。
+このアプリケーションは、Goの`webview`パッケージを使用したシンプルなデスクトップアプリケーションです。HTML/CSS/JavaScriptで作成されたダッシュボードをデスクトップアプリとして表示します。
 
-## 必要なもの
+## 機能
+
+- 埋め込みHTMLコンテンツをレンダリング
+- デスクトップウィンドウでの表示（サイズ: 1600x1000ピクセル）
+- 内蔵HTTPサーバーによるコンテンツ配信
+
+## 必要条件
 
 - Go 1.16以上
-- Dockerによるクロスコンパイル用にDockerがインストールされていること
+- [webview/webview_go](https://github.com/webview/webview_go)の依存関係
+
+### プラットフォーム別の依存関係
+
+#### Windows
+- Microsoft Edge WebView2 ランタイム
+- MSVC ビルドツール
+
+#### macOS
+- Cocoa フレームワーク
+- WebKit フレームワーク
+
+#### Linux
+- GTK 3
+- WebKit2GTK
 
 ## ビルド方法
 
-### Dockerを使用したWindows向けビルド（推奨）
+### 通常のビルド
 
 ```bash
-# スクリプトを実行可能にする
-chmod +x build-windows.sh
-
-# ビルドを実行
-./build-windows.sh
+go build -o dashboard .
 ```
 
-または:
+### macOS用アプリバンドルの作成
+
+コンソールウィンドウを表示せずにアプリケーションを実行するには、以下のスクリプトを使用してください:
 
 ```bash
-make build-windows-docker
+./build_mac.sh
 ```
 
-### ローカル環境向けビルド
+これにより`Dashboard.app`が作成され、通常のmacOSアプリケーションとして動作します。
+
+### Windows用ビルド（コンソールなし）
 
 ```bash
-make build-local
+go build -ldflags -H=windowsgui -o app.exe .
 ```
 
-### macOS向けビルド
+## 使用方法
 
-```bash
-make build-macos
-```
+アプリケーションを起動すると、埋め込みのHTMLコンテンツが表示されたウィンドウが開きます。
 
-### 実行
+## プロジェクト構成
 
-```bash
-make run
-```
+- `main.go` - メインアプリケーションコード
+- `dashboard.html` - 埋め込みHTMLコンテンツ
+- `build_mac.sh` - macOS用アプリバンドル作成スクリプト
 
-## 注意点
+## ライセンス
 
-- WebViewライブラリはCGOを使用するため、クロスコンパイルには適切なツールチェーンが必要です
-- クロスコンパイルの複雑さを避けるため、Dockerを使用したビルドを推奨します
-- Windows向けビルドでエラーが発生する場合は、Windows環境で直接ビルドするか、下記の代替案を検討してください
-
-## 代替案
-
-1. **Windows環境でビルドする**: WSL2やWindowsネイティブのGo環境を使用します
-2. **別のライブラリを検討する**: WebViewの代わりにLorca（https://github.com/zserge/lorca）などのCGOに依存しないUIフレームワークを使用する
-3. **静的HTMLとブラウザを使用する**: ローカルのHTMLファイルを開くシンプルなアプリケーションとして実装する
-
-## トラブルシューティング
-
-ビルド中に以下のようなエラーが発生する場合:
-```
-g++: error: unrecognized command-line option '-m64'
-g++: error: unrecognized command-line option '-mthreads'
-```
-
-これはクロスコンパイラとwebviewライブラリの互換性の問題です。修正したビルドスクリプトを使用するか、Windows環境で直接ビルドしてください。
+このプロジェクトはMITライセンスの下で公開されています。
